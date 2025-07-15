@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-chatapp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-chatapp}
+      POSTGRES_DB: ${POSTGRES_DB:-chatapp_db}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "35432:5432"
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    ports:
+      - "3456:3456"
+
+
+volumes:
+  pgdata:

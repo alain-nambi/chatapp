@@ -2,14 +2,14 @@
 import dotenv from "dotenv"
 dotenv.config()
 
-
-
 // Import core dependencies
 import express from "express"
 import cors from "cors"
 
 // Import route modules
 import { authRouter } from "./routes/auth_routes.js"
+
+import { authenticate } from "./middlewares/authenticate.js"
 
 // Initialize the app
 const app = express();
@@ -27,7 +27,7 @@ app.get('/health', (_req, res) => {
 });
 
 // Environment config endpoint (optional - remove in production)
-app.get('/config', (_req, res) => {
+app.get('/config', authenticate, (_req, res) => {
   res.status(200).json({
     port: process.env.PORT || 3000,
   });

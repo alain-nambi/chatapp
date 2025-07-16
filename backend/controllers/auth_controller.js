@@ -65,7 +65,8 @@ const login = async (req, res) => {
                 username: user.username,
                 email: user.email,
             },
-            token
+            token,
+            expiresIn: JWT_EXPIRES_IN
         })
     } catch (error) {
         handlePrismaError(error, res)

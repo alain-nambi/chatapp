@@ -5,6 +5,7 @@ dotenv.config()
 // Import core dependencies
 import express from "express"
 import cors from "cors"
+import cookieParser from "cookie-parser"
 
 // Import route modules
 import { authRouter } from "./routes/auth_routes.js"
@@ -15,8 +16,10 @@ import { authenticate } from "./middlewares/authenticate.js"
 const app = express();
 
 // Middleware
+app.use(cookieParser())
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
 
 // Health check
 app.get('/health', (_req, res) => {

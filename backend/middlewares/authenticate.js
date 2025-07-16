@@ -4,7 +4,7 @@ import { logger } from "../utils/logger.js";
 // Middleware d'authentification : vérifie si l'utilisateur est connecté via le token JWT
 export const authenticate = (req, res, next) => {
   // 🔍 Log les cookies de la requête pour le débogage
-  logger.info(req.cookies);
+  // logger.info(req.cookies);
 
   // 🔐 Récupère le token d'accès depuis les cookies
   const token = req.cookies.accessToken;

@@ -76,7 +76,7 @@ export const login = async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production', // ⚠️ HTTPS requis en production
             sameSite: 'Strict', // Protection contre les attaques CSRF
-            maxAge: 1000 * 60 * 15 // 15 minutes
+            maxAge: 1000 * 60 * 60 * 24 // 1 jour
         });
 
         // 🍪 Envoi du refresh token dans un autre cookie sécurisé

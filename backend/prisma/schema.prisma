@@ -14,11 +14,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// 👤 Modèle représentant un utilisateur du système
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  username  String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String    @id @default(cuid())  // 🆔 Identifiant unique de l'utilisateur (auto généré)
+  email     String    @unique               // 📧 Email unique de l'utilisateur
+  username  String    @unique               // 📝 Nom d'utilisateur unique
+  password  String                          // 🔒 Mot de passe (haché)
+  createdAt DateTime  @default(now())      // 📅 Date de création du compte
+  updatedAt DateTime  @updatedAt            // 🔄 Date de dernière mise à jour
+
+  // 💬 Relation 1:N : un utilisateur peut envoyer plusieurs messages
+  sentMessages     Message[] @relation("SentMessages")
+
+  // 📥 Relation 1:N : un utilisateur peut recevoir plusieurs messages
+  receivedMessages Message[] @relation("ReceivedMessages")
+}
+
+// ✉️ Modèle représentant un message entre utilisateurs
+model Message {
+  id          String   @id @default(cuid())  // 🆔 Identifiant unique du message
+  senderId    String                        // 👤 ID de l'expéditeur (clé étrangère)
+  recipientId String                        // 👥 ID du destinataire (clé étrangère)
+  content     String                        // 📝 Contenu du message
+  createdAt   DateTime @default(now())     // 📅 Date d'envoi du message
+
+  // 👤 Relation avec l'expéditeur (User)
+  sender    User @relation("SentMessages", fields: [senderId], references: [id])
+
+  // 👥 Relation avec le destinataire (User)
+  recipient User @relation("ReceivedMessages", fields: [recipientId], references: [id])
 }

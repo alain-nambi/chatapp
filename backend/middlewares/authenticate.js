@@ -10,7 +10,11 @@ export const authenticate = (req, res, next) => {
   const token = req.cookies.accessToken;
 
   // ❌ Si aucun token n'est présent, l'utilisateur n'est pas authentifié
-  if (!token) return res.status(401).json({ error: "Unauthorized" });
+  if (!token) {
+    return res.status(401).json({
+      error: "🚫 Token d'authentification manquant. Accès non autorisé.",
+    });
+  }
 
   try {
     // ✅ Vérifie et décode le token avec la clé secrète définie dans le fichier .env

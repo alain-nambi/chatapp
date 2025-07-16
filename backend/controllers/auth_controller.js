@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt"
 import prisma from "../prisma/client.js";
+import handlePrismaError from "../middlewares/prisma_error_handler.js";
 
 const register =  async (req, res) => {
     const { username, email, password } = req.body
@@ -11,10 +12,12 @@ const register =  async (req, res) => {
             select: { id: true, username: true, email: true }
         })
 
-        res.status(201).json({ user });
+        res.status(201).json({ 
+            message: `User ${username} succesfully registered.`,
+            user: user, 
+        });
     } catch (error) {
-        console.error("Error creating user:", error);
-        res.status(500).json({ error: "Internal server error" });
+        handlePrismaError(error, res)
     }
 }
 

@@ -19,6 +19,25 @@ const registerSchema = z.object({
 // ✅ Middleware de validation exécuté avant l'inscription
 export const validateRegister = (req, res, next) => {
     try {
+        if (!req.body) {
+            return res.status(400).json({
+                error: "Données manquantes dans la requête."
+            });
+        }
+
+        const { username, email, password } = req.body
+
+        const missingFields = [];
+        if (!username) missingFields.push("username");
+        if (!email) missingFields.push("email");
+        if (!password) missingFields.push("password");
+
+        if (missingFields.length > 0) {
+            return res.status(400).json({
+                error: `Les champs suivants sont obligatoires : ${missingFields.join(", ")}.`
+            });
+        }
+
         // 💡 Tente de valider les données envoyées par l'utilisateur
         // Utilise le schéma registerSchema défini avec Zod
         registerSchema.parse(req.body);

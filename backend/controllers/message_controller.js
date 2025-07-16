@@ -2,91 +2,114 @@ import prisma from "../prisma/client.js";
 import { logger } from "../utils/logger.js";
 
 export const sendMessage = async (req, res) => {
-    // 🔍 Vérifie que le corps de la requête existe
-    if (!req.body) {
-        return res.status(400).json({
-            error: "Données manquantes dans la requête.",
-        });
+  // 🧾 Vérifie la présence du corps de la requête
+  if (!req.body) {
+    return res.status(400).json({ error: "Données manquantes dans la requête." });
+  }
+
+  // 📝 Extraction des champs de la requête
+  const { recipientId, content } = req.body;
+  const senderId = req.user?.id;
+
+  // 📋 Validation des champs obligatoires
+  const missing = [];
+  if (!recipientId) missing.push("recipientId");
+  if (!content) missing.push("content");
+  if (!senderId) missing.push("senderId");
+
+  if (missing.length > 0) {
+    return res.status(400).json({
+      error: `Champs manquants : ${missing.join(", ")}`,
+    });
+  }
+
+  try {
+    // 🔍 Vérifie si le destinataire existe
+    const recipient = await prisma.user.findUnique({
+      where: { id: String(recipientId) },
+    });
+
+    if (!recipient) {
+      return res.status(404).json({
+        success: false,
+        error: "❌ Le destinataire n'existe pas.",
+      });
     }
 
-    // 📝 Extraction des champs nécessaires
-    const { recipientId, content } = req.body;
-    const senderId = String(req.user?.id); // sécurise l'accès à l'id utilisateur
+    // 💾 Création du message
+    const message = await prisma.message.create({
+      data: {
+        senderId: String(senderId),
+        recipientId: String(recipientId),
+        content: String(content),
+      },
+      select: { content: true },
+    });
 
-    // 🔎 Collecte des champs manquants
-    const missingFields = [];
-    if (!recipientId) missingFields.push("recipientId");
-    if (!content) missingFields.push("content");
-    if (!senderId) missingFields.push("senderId");
+    // ✅ Réponse réussie
+    return res.status(201).json({
+      success: true,
+      message: "✅ Message envoyé avec succès.",
+      data: message,
+    });
 
-    // 🚫 Retourne une erreur si des champs sont manquants
-    if (missingFields.length > 0) {
-        return res.status(400).json({
-            error: `Les champs suivants sont obligatoires : ${missingFields.join(", ")}.`,
-        });
-    }
-
-    try {
-        const user = await prisma.user.findUnique({
-            where: { id: String(recipientId) }
-        })
-
-        logger.info(user)
-
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                error: "Le destinataire n'existe pas",
-            });
-        }
-
-        // 💾 Création du message dans la base de données
-        const message = await prisma.message.create({
-            data: {
-                senderId: String(senderId),
-                recipientId: String(recipientId), // conversion en string pour Prisma
-                content: String(content),
-            },
-            select: { content: true }
-        });
-
-        // ✅ Réponse réussie avec les données du message créé
-        return res.status(201).json({
-            success: true,
-            message: "Message envoyé avec succès.",
-            data: message,
-        });
-    } catch (error) {
-        // 🛑 Log et retour d'erreur serveur
-        logger.error(`Send message Error : ${error}`);
-        return res.status(500).json({
-            success: false,
-            error: "Erreur lors de l'envoi du message.",
-        });
-    }
+  } catch (error) {
+    // 🚨 Gestion des erreurs
+    logger.error(`❗ Send message Error : ${error}`);
+    return res.status(500).json({
+      success: false,
+      error: "Erreur lors de l'envoi du message.",
+    });
+  }
 };
 
 
 export const getMessages = async (req, res) => {
-    const { recipientId } = req.params;
-    const senderId = req.user.id;
+  // 🧾 Récupère l'ID du destinataire depuis les paramètres de l'URL
+  const { recipientId } = req.params;  
 
-    try {
-        const messages = await prisma.message.findMany({
-            where: {
-                OR: [
-                    { senderId, recipientId },
-                    { senderId: recipientId, recipientId: senderId },
-                ],
-            },
-            orderBy: { createdAt: "asc" },
-        });
+  const senderId = req.user?.id;
 
-        res.status(200).json({ messages });
-    } catch (error) {
-        logger.error(`Get Messages Error : ${error}`);
-        res.status(500).json({
-            error: `Erreur lors de la récupération du messages.`,
-        });
-    }
+  // 🔒 Vérifie que l'utilisateur est bien authentifié
+  if (!senderId) {
+    return res.status(401).json({
+      success: false,
+      error: "Utilisateur non authentifié.",
+    });
+  }
+
+  // 🧪 Vérifie que l'ID du destinataire est bien présent
+  if (!recipientId) {
+    return res.status(400).json({
+      success: false,
+      error: "L'ID du destinataire est requis.",
+    });
+  }
+
+  try {
+    // 💬 Récupère les messages entre l'utilisateur courant et le destinataire
+    const messages = await prisma.message.findMany({
+      where: {
+        OR: [
+          { senderId, recipientId },
+          { senderId: recipientId, recipientId: senderId },
+        ],
+      },
+      orderBy: { createdAt: "asc" }, // 📅 Trie du plus ancien au plus récent
+    });
+
+    // ✅ Réponse avec la liste des messages
+    return res.status(200).json({
+      success: true,
+      count: messages.length,
+      messages,
+    });
+  } catch (error) {
+    // 🛑 Log en cas d'erreur serveur
+    logger.error(`❗ Erreur lors de la récupération des messages : ${error}`);
+    return res.status(500).json({
+      success: false,
+      error: "Une erreur est survenue lors de la récupération des messages.",
+    });
+  }
 };

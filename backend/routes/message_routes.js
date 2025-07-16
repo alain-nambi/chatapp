@@ -5,6 +5,6 @@ import { authenticate } from "../middlewares/authenticate.js";
 const messageRouter = Router();
 
 messageRouter.post("/send", authenticate, sendMessage);
-messageRouter.get("/:recipiendId", getMessages);
+messageRouter.get("/:recipientId", authenticate, getMessages);
 
 export default messageRouter;

@@ -4,7 +4,9 @@ import { logger } from "../utils/logger.js";
 export const sendMessage = async (req, res) => {
   // 🧾 Vérifie la présence du corps de la requête
   if (!req.body) {
-    return res.status(400).json({ error: "Données manquantes dans la requête." });
+    return res
+      .status(400)
+      .json({ error: "Données manquantes dans la requête." });
   }
 
   // 📝 Extraction des champs de la requête
@@ -24,18 +26,6 @@ export const sendMessage = async (req, res) => {
   }
 
   try {
-    // 🔍 Vérifie si le destinataire existe
-    const recipient = await prisma.user.findUnique({
-      where: { id: String(recipientId) },
-    });
-
-    if (!recipient) {
-      return res.status(404).json({
-        success: false,
-        error: "❌ Le destinataire n'existe pas.",
-      });
-    }
-
     // 💾 Création du message
     const message = await prisma.message.create({
       data: {
@@ -52,7 +42,6 @@ export const sendMessage = async (req, res) => {
       message: "✅ Message envoyé avec succès.",
       data: message,
     });
-
   } catch (error) {
     // 🚨 Gestion des erreurs
     logger.error(`❗ Send message Error : ${error}`);
@@ -63,10 +52,9 @@ export const sendMessage = async (req, res) => {
   }
 };
 
-
 export const getMessages = async (req, res) => {
   // 🧾 Récupère l'ID du destinataire depuis les paramètres de l'URL
-  const { recipientId } = req.params;  
+  const { recipientId } = req.params;
 
   const senderId = req.user?.id;
 

@@ -1,0 +1,6 @@
+# .dockerignore
+
+node_modules
+.pnpm
+.DS_Store
+npm-debug.log

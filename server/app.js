@@ -7,6 +7,7 @@ dotenv.config();
 // Initialize Express app
 const app = express();
 
+
 // Set the port from environment variable or default to 3456
 const PORT = process.env.NODE_PORT || 3000;
 

@@ -16,4 +16,5 @@ RUN pnpm install
 COPY . .
 
 # Lancer l'application en mode développement
-CMD ["nodemon", "--legacy-watch", "server/app.js"]
+CMD ["nodemon"]
+

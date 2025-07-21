@@ -17,7 +17,8 @@ services:
       dockerfile: Dockerfile
     restart: always
     volumes:
-      - .:/app
+      - ./server:/usr/src/app
+      - /usr/src/app/node_modules # To avoid conflicts with host node_modules
     ports:
       - "3456:3000"
     depends_on:

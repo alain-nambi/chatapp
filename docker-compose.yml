@@ -23,6 +23,17 @@ services:
       - "3456:3000"
     depends_on:
       - db
+      - redis
+    entrypoint: sh -c "sleep 5 && nodemon"
+
+  redis:
+    image: redis:7
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/data:/data
 
 volumes:
   pgdata:

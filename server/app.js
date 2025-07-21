@@ -2,6 +2,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import { connectRedis } from './utils/redis.js';
 
 dotenv.config();
 
@@ -30,6 +31,18 @@ app.get('/health', (req, res) => {
            date: new Date().toISOString()
        });
 })
+
+app.get('/redis', async (req, res) => {
+    try {
+        const client = await connectRedis();
+        await client.set('key', 'value');
+        const value = await client.get('key');
+        res.status(200).json({ value });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

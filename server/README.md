@@ -15,13 +15,13 @@ This project is a real-time chat app using Node.js, Express, Sequelize (PostgreS
 
 ## 🛠️ Sequelize ORM Setup
 
-- [ ] Install Sequelize, PostgreSQL, and CLI
-- [ ] Run `sequelize-cli init`
-- [ ] Configure `config/config.js` with `.env`
-- [ ] Create `User` model
-- [ ] Create `Message` model (with relation to `User`)
-- [ ] Run database migrations
-- [ ] (Optional) Add seeders for sample data
+- [x] Install Sequelize, PostgreSQL, and CLI
+- [x] Run `sequelize-cli init`
+- [x] Configure `config/config.cjs` with `.env`
+- [x] Create `User` model
+- [x] Create `Message` model (with relation to `User`)
+- [x] Run database migrations
+- [x] (Optional) Add seeders for sample data
 
 ---
 

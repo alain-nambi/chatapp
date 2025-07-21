@@ -1,17 +1,19 @@
-# Use the official Node.js image as the base image
 FROM node:18-alpine
 
-# Set the working directory inside the container
+# Installer pnpm (global)
+RUN yarn global add pnpm nodemon
+
+# Créer le répertoire de travail
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json to the working directory
+# Copier les fichiers pour installer les dépendances
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Installer les dépendances du projet
+RUN pnpm install
 
-# Copy the rest of the application code
+# Copier le reste du code
 COPY . .
 
-# Command to run the application when the container starts
-CMD ["node", "app.js"]
+# Lancer l'application en mode développement
+CMD ["nodemon", "--legacy-watch", "server/app.js"]

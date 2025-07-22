@@ -27,9 +27,9 @@ This project is a real-time chat app using Node.js, Express, Sequelize (PostgreS
 
 ## 🧠 Redis Setup
 
-- [ ] Add Redis to Docker Compose
-- [ ] Install Redis client in Node.js (`pnpm add redis`)
-- [ ] Connect to Redis and test connection
+- [X] Add Redis to Docker Compose
+- [X] Install Redis client in Node.js (`pnpm add redis`)
+- [X] Connect to Redis and test connection
 
 ---
 

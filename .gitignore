@@ -1,2 +1,90 @@
-node_modules
+# 🔧 Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+.pnpm-debug.log*
+.vscode/
+.DS_Store
 .env
+.env.local
+.env.*.local
+*.local
+
+# 🔧 Logs
+logs
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# 🏗️ Build Output
+dist/
+build/
+.cache/
+.next/
+out/
+temp/
+tmp/
+coverage/
+public/build/
+
+# 🚫 OS Files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# 📦 Dependency directories
+.bun/
+.pnpm/
+.webpack/
+
+# ⚙️ IDE & Editor folders
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 💬 Socket.IO or DB Data
+*.sqlite
+*.db
+*.redis
+
+# 🧪 Test Coverage
+coverage/
+.nyc_output/
+
+# 🧰 Misc
+*.tgz
+*.gz
+*.zip
+*.tar
+*.log
+*.bak
+
+# 🧼 Lint cache
+.eslintcache
+.stylelintcache
+.prettiercache
+
+# 🗃️ Git stash conflicts
+*.orig
+
+# ⚙️ Docker
+docker-compose.override.yml
+*.pid
+
+# 🔐 Private Keys
+*.pem
+*.key
+
+# 🧪 Cypress / Playwright / Testing
+cypress/videos/
+cypress/screenshots/
+playwright-report/
+test-results/
+
+# 📦 Next.js export
+.next/
+out/

@@ -3,5 +3,5 @@
   "ext": "js,json",
   "legacyWatch": true,
   "ignore": ["node_modules"],
-  "exec": "node app.js"
+  "exec": "node server.js"
 }
